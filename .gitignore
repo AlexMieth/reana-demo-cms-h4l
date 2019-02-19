@@ -4,3 +4,5 @@ outputs/mass4l_combine_userlvl3.pdf
 outputs/step1data.log
 outputs/step1mc.log
 outputs/step2.log
+.DS_Store
+code/HiggsExample20112012/Level4/cfg_files/
