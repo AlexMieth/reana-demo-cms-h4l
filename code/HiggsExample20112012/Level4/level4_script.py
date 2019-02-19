@@ -1,3 +1,15 @@
+#Open file that contains list of sample datasets
+with open("List_indexfile.txt","r") as fi:
+    samples = []
+    #Read line by line
+    for line in fi:
+        #Only interested in lines that start with filepath
+        if line.startswith('/'):
+            #Remove the empty first element and the AOD or AODSIM last element
+            samples.append(line.split('/')[1:-1])
+
+
+################################################################################
 import glob
 
 #Get pathnames to all the .txt index files from within the datasets directory
