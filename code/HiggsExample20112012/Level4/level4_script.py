@@ -34,8 +34,8 @@ for index_filename in datasets:
             #Get new list of N root files
             N_rootfiles = lines[i:i+N]
 
-            #Turn this list of N root files into 1 string delimited with spaces
-            new_input_filenames = ' '.join(N_rootfiles)
+            #Turn this list of N root files into 1 string delimited with commas
+            new_input_filenames = ','.join(N_rootfiles)
 
             #Update the count and create the new cfg filename and the new output filename
             count += 1
