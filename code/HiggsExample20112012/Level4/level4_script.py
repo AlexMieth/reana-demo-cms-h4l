@@ -4,7 +4,7 @@ import glob
 datasets = glob.glob('datasets/*.txt', recursive=True)
 
 #Read in the default format for the python configuration files
-with open('default_cfg.py', 'r') as default_cfg:
+with open('code/HiggsExample20112012/Level4/default_cfg.py', 'r') as default_cfg:
     default_content = default_cfg.read()
 
 N = 100
@@ -19,7 +19,7 @@ for filename in datasets:
             N_rootfiles = lines[i:i+N]
 
             count += 1
-            new_filename = 'cfg_files/demoanalyzer_cfg' + str(count) + '.py'
+            new_filename = 'code/HiggsExample20112012/Level4/cfg_files/demoanalyzer_cfg' + str(count) + '.py'
             new_output_filename = 'output' + str(count) + '.root'
 
             new_content = default_content
