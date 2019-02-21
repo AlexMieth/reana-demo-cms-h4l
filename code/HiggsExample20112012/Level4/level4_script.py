@@ -1,64 +1,103 @@
+import argparse
+import glob
+import sys
+
+#Configure command line arguments
+parser = argparse.ArgumentParser(
+    description='Generate configuration files for CMS Higgs-to-four-leptons Level 4 example.')
+parser.add_argument('-n', type=int, default=50,
+    help='Number of files to be analyzed witin each configuration file / job. Default is 50')
+parser.add_argument('-d','--dataset', type=str,
+    help='Specify which dataset you want to analyze. For example: /DoubleMuParked/Run2012B-22Jan2013-v1/AOD')
+
+#Get command line arguments
+args = parser.parse_args()
+N = args.n                      #Max Number of rootfiles to be input to each newly generated cfg file
+input_dataset = args.dataset    #Dataset specified by the user at the command line
+
+
 #Open file that contains list of sample datasets
-with open("List_indexfile.txt","r") as fi:
+with open("code/HiggsExample20112012/Level4/List_indexfile.txt","r") as fi:
     samples = []
     #Read line by line
     for line in fi:
         #Only interested in lines that start with filepath
         if line.startswith('/'):
-            #Remove the empty first element and the AOD or AODSIM last element
-            samples.append(line.split('/')[1:-1])
+            #If the user provided a specific dataset at the command line
+            if input_dataset is not None:
+                #Check to see if that input dataset matches the current line
+                if input_dataset in line:
+                    samples.append(line.split('/')[1:-1])
+            else:
+                #Remove the empty first element and the AOD or AODSIM last element
+                samples.append(line.split('/')[1:-1])
 
+#Make sure that input dataset was found
+if len(samples) == 0:
+    sys.exit("ERROR: Input dataset was not found in List_indexfile.txt.")
+elif len(samples) == 1:
+    print("Generating configuration file(s) for",input_dataset)
+else:
+    print("Generating configuration files for all datasets in List_indexfile.txt.")
 
-################################################################################
-import glob
 
 #Get pathnames to all the .txt index files from within the datasets directory
-datasets = glob.glob('datasets/*.txt', recursive=True)
+available_index_files = glob.glob('datasets/*.txt', recursive=True)
+
+#Create a dictionary that matches each dataset name to its corresponding index files
+dataset_dict = {}
+for sample in samples:
+    key = sample[0]
+    matching_index_files = [idx_file for idx_file in available_index_files if key in idx_file]
+    dataset_dict[key]=matching_index_files
+
 
 #Read in the default format for the python configuration files
 with open('code/HiggsExample20112012/Level4/default_cfg.py', 'r') as default_cfg:
     default_content = default_cfg.read()
 
-N = 10      #Max Number of rootfiles to be input to each newly generated cfg file
-count = 0   #Make a count to keep track the number of cfg files generated
 
-#Iterate through each of the index files listed within the datasets array
-for index_filename in datasets:
-    with open(index_filename,"r") as index_file:
+for key,index_files in dataset_dict.items():
 
-        #Read in the index file and create list of each line without '\n'
-        lines = index_file.read().splitlines()
+    count = 0   #Make a count to keep track the number of cfg files generated for each dataset key
 
-        #Iterate through each N set of lines
-        for i in range(0, len(lines), N):
-            #Get new list of N root files
-            N_rootfiles = lines[i:i+N]
+    #Iterate through each of the index files listed within this dataset key
+    for index_filename in index_files:
+        with open(index_filename,"r") as index_file:
 
-            #Turn this list of N root files into 1 string delimited with commas
-            new_input_filenames = ','.join(N_rootfiles)
+            #Read in the index file and create list of each line without '\n'
+            lines = index_file.read().splitlines()
 
-            #Update the count and create the new cfg filename and the new output filename
-            count += 1
-            new_filename = 'code/HiggsExample20112012/Level4/cfg_files/demoanalyzer_cfg' + str(count) + '.py'
-            new_output_filename = 'output' + str(count) + '.root'
+            #Iterate through each N set of lines
+            for i in range(0, len(lines), N):
+                #Get new list of N root files
+                N_rootfiles = lines[i:i+N]
 
-            #Adjust the input filenames and output filename for the new cfg
-            new_content = default_content
-            new_content = new_content.replace('OUTPUT_FILE_STR', new_output_filename)
-            new_content = new_content.replace('INPUT_FILES_STR', new_input_filenames)
+                #Turn this list of N root files into 1 string delimited with commas
+                new_input_filenames = ','.join(N_rootfiles)
 
-            #Adjust the JSON file if the index file is for data (not necessary for MC)
-            if "Run" in index_filename:
-                #Uncomment the JSON file definition lines
-                new_content = new_content.replace('#goodJSON','goodJSON')
-                new_content = new_content.replace('#myLumis','myLumis')
+                #Update the count and create the new cfg filename and the new output filename
+                count += 1
+                new_filename = 'code/HiggsExample20112012/Level4/cfg_files/demoanalyzer_' + key + '_cfg' + str(count) + '.py'
+                new_output_filename = key + 'output' + str(count) + '.root'
 
-                #Adjust the JSON file depending on run year
-                if "2011" in index_filename:
-                    new_content = new_content.replace('INPUT_JSON_STR','json_files/Cert_160404-180252_7TeV_ReRecoNov08_Collisions11_JSON.txt')
-                elif "2012" in index_filename:
-                    new_content = new_content.replace('INPUT_JSON_STR','json_files/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt')
+                #Adjust the input filenames and output filename for the new cfg
+                new_content = default_content
+                new_content = new_content.replace('OUTPUT_FILE_STR', new_output_filename)
+                new_content = new_content.replace('INPUT_FILES_STR', new_input_filenames)
 
-            #Create/write new cfg file using this updated content
-            with open(new_filename,"w") as new_cfg:
-                new_cfg.write(new_content)
+                #Adjust the JSON file if the index file is for data (not necessary for MC)
+                if "Run" in index_filename:
+                    #Uncomment the JSON file definition lines
+                    new_content = new_content.replace('#goodJSON','goodJSON')
+                    new_content = new_content.replace('#myLumis','myLumis')
+
+                    #Adjust the JSON file depending on run year
+                    if "2011" in index_filename:
+                        new_content = new_content.replace('INPUT_JSON_STR','json_files/Cert_160404-180252_7TeV_ReRecoNov08_Collisions11_JSON.txt')
+                    elif "2012" in index_filename:
+                        new_content = new_content.replace('INPUT_JSON_STR','json_files/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt')
+
+                #Create/write new cfg file using this updated content
+                with open(new_filename,"w") as new_cfg:
+                    new_cfg.write(new_content)
