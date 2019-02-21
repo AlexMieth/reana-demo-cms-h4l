@@ -27,10 +27,16 @@ with open("code/HiggsExample20112012/Level4/List_indexfile.txt","r") as fi:
             if input_dataset is not None:
                 #Check to see if that input dataset matches the current line
                 if input_dataset in line:
-                    samples.append(line.split('/')[1:-1])
+                    line_split1 = line.split('/')[1:-1]
+                    line_split2 = line_split1[1].split('-')
+                    new_sample = (line_split1[0],line_split2[0])
+                    samples.append(new_sample)
             else:
                 #Remove the empty first element and the AOD or AODSIM last element
-                samples.append(line.split('/')[1:-1])
+                line_split1 = line.split('/')[1:-1]
+                line_split2 = line_split1[1].split('-')
+                new_sample = (line_split1[0],line_split2[0])
+                samples.append(new_sample)
 
 #Make sure that input dataset was found
 if len(samples) == 0:
@@ -47,10 +53,9 @@ available_index_files = glob.glob('datasets/*.txt', recursive=True)
 #Create a dictionary that matches each dataset name to its corresponding index files
 dataset_dict = {}
 for sample in samples:
-    key = sample[0]
-    matching_index_files = [idx_file for idx_file in available_index_files if key in idx_file]
+    key = sample
+    matching_index_files = [fi for fi in available_index_files if all([subkey in fi for subkey in key])]
     dataset_dict[key]=matching_index_files
-
 
 #Read in the default format for the python configuration files
 with open('code/HiggsExample20112012/Level4/default_cfg.py', 'r') as default_cfg:
@@ -60,6 +65,7 @@ with open('code/HiggsExample20112012/Level4/default_cfg.py', 'r') as default_cfg
 for key,index_files in dataset_dict.items():
 
     count = 0   #Make a count to keep track the number of cfg files generated for each dataset key
+    dataset_id = key[0] + '-' + key[1]
 
     #Iterate through each of the index files listed within this dataset key
     for index_filename in index_files:
@@ -78,8 +84,8 @@ for key,index_files in dataset_dict.items():
 
                 #Update the count and create the new cfg filename and the new output filename
                 count += 1
-                new_filename = 'code/HiggsExample20112012/Level4/cfg_files/demoanalyzer_' + key + '_cfg' + str(count) + '.py'
-                new_output_filename = key + 'output' + str(count) + '.root'
+                new_filename = 'code/HiggsExample20112012/Level4/cfg_files/demoanalyzer_' + dataset_id + '_cfg' + str(count) + '.py'
+                new_output_filename = dataset_id + 'output' + str(count) + '.root'
 
                 #Adjust the input filenames and output filename for the new cfg
                 new_content = default_content
