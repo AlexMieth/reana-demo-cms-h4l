@@ -72,7 +72,7 @@ process.demo = cms.EDAnalyzer('HiggsDemoAnalyzerGit'
 # change this according to your wish                        *
 # ***********************************************************
 process.TFileService = cms.Service("TFileService",
-       fileName = cms.string('../../../../outputs/OUTPUT_FILE_STR')
+       fileName = cms.string('../../../outputs/OUTPUT_FILE_STR')
                                    )
 
 process.p = cms.Path(process.demo)

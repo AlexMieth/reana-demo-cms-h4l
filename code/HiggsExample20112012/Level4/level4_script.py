@@ -85,7 +85,7 @@ for key,index_files in dataset_dict.items():
                 #Update the count and create the new cfg filename and the new output filename
                 count += 1
                 new_filename = 'code/HiggsExample20112012/Level4/cfg_files/demoanalyzer_' + dataset_id + '_cfg' + str(count) + '.py'
-                new_output_filename = dataset_id + 'output' + str(count) + '.root'
+                new_output_filename = dataset_id + '_output' + str(count) + '.root'
 
                 #Adjust the input filenames and output filename for the new cfg
                 new_content = default_content
