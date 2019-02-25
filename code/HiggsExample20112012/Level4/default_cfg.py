@@ -41,11 +41,9 @@ import FWCore.Utilities.FileUtils as FileUtils
 #
 # *** 2012 ZZ to 4 muons simulation ***
 #files2012data = FileUtils.loadListFromFile ('../datasets/mc_lists/CMS_MonteCarlo2012_Summer12_DR53X_ZZTo4mu_8TeV-powheg-pythia6_AODSIM_PU_RD1_START53_V7N-v1_20000_file_index.txt')
-input_filenames_str = 'INPUT_FILES_STR'
-files_list = input_filenames_str.split(',')
 
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring(*files_list   
+    fileNames = cms.untracked.vstring(INPUT_FILES_STR
     )
 )
 #

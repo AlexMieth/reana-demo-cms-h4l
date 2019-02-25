@@ -80,7 +80,9 @@ for key,index_files in dataset_dict.items():
                 N_rootfiles = lines[i:i+N]
 
                 #Turn this list of N root files into 1 string delimited with commas
-                new_input_filenames = ','.join(N_rootfiles)
+                new_input_filenames = '\",\n\"'.join(N_rootfiles)
+                new_input_filenames = "[\"" + new_input_filenames
+                new_input_filenames = new_input_filenames + "\"]" 
 
                 #Update the count and create the new cfg filename and the new output filename
                 count += 1
