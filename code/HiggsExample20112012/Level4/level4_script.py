@@ -66,46 +66,47 @@ for key,index_files in dataset_dict.items():
 
     count = 0   #Make a count to keep track the number of cfg files generated for each dataset key
     dataset_id = key[0] + '-' + key[1]
+    rootfiles = []
 
     #Iterate through each of the index files listed within this dataset key
     for index_filename in index_files:
         with open(index_filename,"r") as index_file:
 
             #Read in the index file and create list of each line without '\n'
-            lines = index_file.read().splitlines()
+            rootfiles.extend( index_file.read().splitlines() )
 
-            #Iterate through each N set of lines
-            for i in range(0, len(lines), N):
-                #Get new list of N root files
-                N_rootfiles = lines[i:i+N]
+    #Iterate through each N set of lines
+    for i in range(0, len(rootfiles), N):
+        #Get new list of N root files
+        N_rootfiles = rootfiles[i:i+N]
 
-                #Turn this list of N root files into 1 string delimited with commas
-                new_input_filenames = '\",\n\"'.join(N_rootfiles)
-                new_input_filenames = "[\"" + new_input_filenames
-                new_input_filenames = new_input_filenames + "\"]" 
+        #Turn this list of N root files into
+        new_input_filenames = '\",\n\"'.join(N_rootfiles)
+        new_input_filenames = "[\"" + new_input_filenames
+        new_input_filenames = new_input_filenames + "\"]" 
 
-                #Update the count and create the new cfg filename and the new output filename
-                count += 1
-                new_filename = 'code/HiggsExample20112012/Level4/cfg_files/demoanalyzer_' + dataset_id + '_cfg' + str(count) + '.py'
-                new_output_filename = dataset_id + '_output' + str(count) + '.root'
+        #Update the count and create the new cfg filename and the new output filename
+        count += 1
+        new_filename = 'code/HiggsExample20112012/Level4/cfg_files/demoanalyzer_' + dataset_id + '_cfg' + str(count) + '.py'
+        new_output_filename = dataset_id + '_output' + str(count) + '.root'
 
-                #Adjust the input filenames and output filename for the new cfg
-                new_content = default_content
-                new_content = new_content.replace('OUTPUT_FILE_STR', new_output_filename)
-                new_content = new_content.replace('INPUT_FILES_STR', new_input_filenames)
+        #Adjust the input filenames and output filename for the new cfg
+        new_content = default_content
+        new_content = new_content.replace('OUTPUT_FILE_STR', new_output_filename)
+        new_content = new_content.replace('INPUT_FILES_STR', new_input_filenames)
 
-                #Adjust the JSON file if the index file is for data (not necessary for MC)
-                if "Run" in index_filename:
-                    #Uncomment the JSON file definition lines
-                    new_content = new_content.replace('#goodJSON','goodJSON')
-                    new_content = new_content.replace('#myLumis','myLumis')
+        #Adjust the JSON file if the index file is for data (not necessary for MC)
+        if "Run" in dataset_id:
+            #Uncomment the JSON file definition lines
+            new_content = new_content.replace('#goodJSON','goodJSON')
+            new_content = new_content.replace('#myLumis','myLumis')
 
-                    #Adjust the JSON file depending on run year
-                    if "2011" in index_filename:
-                        new_content = new_content.replace('INPUT_JSON_STR','json_files/Cert_160404-180252_7TeV_ReRecoNov08_Collisions11_JSON.txt')
-                    elif "2012" in index_filename:
-                        new_content = new_content.replace('INPUT_JSON_STR','json_files/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt')
+            #Adjust the JSON file depending on run year
+            if "2011" in dataset_id:
+                new_content = new_content.replace('INPUT_JSON_STR','json_files/Cert_160404-180252_7TeV_ReRecoNov08_Collisions11_JSON.txt')
+            elif "2012" in dataset_id:
+                new_content = new_content.replace('INPUT_JSON_STR','json_files/Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON.txt')
 
-                #Create/write new cfg file using this updated content
-                with open(new_filename,"w") as new_cfg:
-                    new_cfg.write(new_content)
+        #Create/write new cfg file using this updated content
+        with open(new_filename,"w") as new_cfg:
+            new_cfg.write(new_content)
