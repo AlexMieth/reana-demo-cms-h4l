@@ -8,4 +8,7 @@ outputs/step2.log
 code/HiggsExample20112012/Level4/cfg_files/
 outputs/
 Level4/cfg_files/*
-!Level4/cfg_files/.gitkeep
+batch_files/err/*
+batch_files/log/*
+batch_files/out/*
+!.gitkeep
