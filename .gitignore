@@ -7,3 +7,5 @@ outputs/step2.log
 .DS_Store
 code/HiggsExample20112012/Level4/cfg_files/
 outputs/
+Level4/cfg_files/*
+!Level4/cfg_files/.gitkeep
