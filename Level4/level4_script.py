@@ -17,7 +17,7 @@ input_dataset = args.dataset    #Dataset specified by the user at the command li
 
 
 #Open file that contains list of sample datasets
-with open("code/HiggsExample20112012/Level4/List_indexfile.txt","r") as fi:
+with open("Level4/List_indexfile.txt","r") as fi:
     samples = []
     #Read line by line
     for line in fi:
@@ -58,7 +58,7 @@ for sample in samples:
     dataset_dict[key]=matching_index_files
 
 #Read in the default format for the python configuration files
-with open('code/HiggsExample20112012/Level4/default_cfg.py', 'r') as default_cfg:
+with open('Level4/default_cfg.py', 'r') as default_cfg:
     default_content = default_cfg.read()
 
 
@@ -86,9 +86,10 @@ for key,index_files in dataset_dict.items():
         new_input_filenames = new_input_filenames + "\"]" 
 
         #Update the count and create the new cfg filename and the new output filename
-        count += 1
-        new_filename = 'code/HiggsExample20112012/Level4/cfg_files/demoanalyzer_' + dataset_id + '_cfg' + str(count) + '.py'
+        #new_filename = 'code/HiggsExample20112012/Level4/cfg_files/demoanalyzer_' + dataset_id + '_cfg' + str(count) + '.py'
+        new_filename = 'Level4/cfg_files/demoanalyzer_cfg' + str(count) + '.py'
         new_output_filename = dataset_id + '_output' + str(count) + '.root'
+        count += 1
 
         #Adjust the input filenames and output filename for the new cfg
         new_content = default_content
