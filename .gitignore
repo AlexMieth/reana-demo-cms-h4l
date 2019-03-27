@@ -1,12 +1,5 @@
-outputs/DoubleMuParked2012C_10000_Higgs.root
-outputs/Higgs4L1file.root
-outputs/mass4l_combine_userlvl3.pdf
-outputs/step1data.log
-outputs/step1mc.log
-outputs/step2.log
 .DS_Store
-code/HiggsExample20112012/Level4/cfg_files/
-outputs/
+outputs/*
 Level4/cfg_files/*
 batch_files/err/*
 batch_files/log/*
