@@ -70,7 +70,7 @@ process.demo = cms.EDAnalyzer('HiggsDemoAnalyzerGit'
 # default is Higgs4L1file.root                              *
 # ***********************************************************
 process.TFileService = cms.Service("TFileService",
-       fileName = cms.string('../../../outputs/Higgs4L1file.root')
+       fileName = cms.string('../outputs/Higgs4L1file.root')
                                    )
 
 process.p = cms.Path(process.demo)
