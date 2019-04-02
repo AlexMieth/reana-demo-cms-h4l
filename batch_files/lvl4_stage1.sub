@@ -1,0 +1,14 @@
+universe                = vanilla
+executable              = lvl4_singularity_cmd.sh
+arguments               = $(ProcID)
+
+should_transfer_files   = IF_NEEDED
+when_to_transfer_output = ON_EXIT
+
+output                  = out/out.$(ClusterId).$(ProcId)
+error                   = err/err.$(ClusterId).$(ProcId)
+log                     = log/log.$(ClusterId).$(ProcId)
+
++JobFlavour = "espresso"
+
+queue 4
