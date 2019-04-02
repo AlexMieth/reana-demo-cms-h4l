@@ -188,6 +188,66 @@ Using CWL:
 
     $ cwltool --outdir=./outputs ./workflow/workflow.cwl ./workflow/input.yaml
 
+Running the example on CERN batch system using HTCondor
+=======================================================
+
+First log on to the CERN lxplus computing cluster using your CERN username and password:
+
+.. code-block:: console
+
+    $ ssh -Y username@lxplus.cern.ch
+
+Set up a CMSSW working folder using the following command:
+
+.. code-block:: console
+
+    [username@lxplus### ~]$ cmsrel CMSSW_5_3_32
+
+Clone the batch_work branch of this repository into the newly created src directory:
+
+.. code-block:: console
+
+    [username@lxplus### ~]$ cd CMSSW_5_3_32/src
+    [username@lxplus### src]$ git clone -b batch_work https://github.com/AlexMieth/reana-demo-cms-h4l.git
+    
+Level 3
+-------
+Run stage 1 of the analysis by submitting the following jobs to the batch system. These jobs process the collision data and simulated Monte Carlo data.
+
+.. code-block:: console
+
+    [username@lxplus### src]$ cd reana-demo-cms-h4l/batch_files
+    [username@lxplus### batch_files]$ condor_submit lvl3_data.sub
+    [username@lxplus### batch_files]$ condor_submit lvl3_mc.sub
+    
+When these two jobs have been completed, you should now see two new files within the outputs directory: DoubleMuParked2012C_10000_Higgs.root and Higgs4L1file.root. Next, run stage 2 of the analysis by submitting the final job.
+
+.. code-block:: console
+
+    [username@lxplus### batch_files]$ condor_submit lvl3_combine.sub
+    
+This job combines the two previously generated output files and produces the final plot: mass4l_combine_userlvl3.pdf.
+
+Level 4
+-------
+The first step of running Level 4 is generating the configuration files needed for stage 1 of the analysis. Go to the Level 4 directory and run level4_script.py. Use the '-n' flag to specify the number of root files you would like to analyze within each configuration file. Each of these configuration files will be run in parallel on the batch system so choosing a smaller number of files per job will decrease the total time needed for analysis but will increase the number of jobs needed to run on batch.
+
+.. code-block:: console
+
+    [username@lxplus### src]$ cd reana-demo-cms-h4l/code/HiggsExample20112012/Level4
+    [username@lxplus### Level4]$ python3 ./level4_script -n 5
+    
+The newly generated configuration files should now be in the cfg_files directory. Now that we have generated all of the configuration files that we would like to run, we simply need to adjust the batch submission file to account for the correct number of jobs. Simply change the number at the end of the file after the word "queue" to match the number of configuration files that you generated.
+
+At this point, simply move to the batch_files directory and submit the jobs to HTCondor.
+
+.. code-block:: console
+
+    [username@lxplus### Level4]$ cd ../../../batch_files
+    [username@lxplus### batch_files]$ condor_submit lvl4_stage1.sub
+
+FIXME
+
 Running the example on REANA cloud
 ==================================
 
