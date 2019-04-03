@@ -1,5 +1,5 @@
 universe                = vanilla
-executable              = lvl4_singularity_cmd.sh
+executable              = singularity_cmd.sh
 arguments               = $(ProcID)
 
 should_transfer_files   = IF_NEEDED
