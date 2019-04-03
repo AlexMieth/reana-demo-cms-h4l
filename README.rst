@@ -203,12 +203,12 @@ Set up a CMSSW working folder using the following command:
 
     [username@lxplus### ~]$ cmsrel CMSSW_5_3_32
 
-Clone the batch_work branch of this repository into the newly created src directory:
+Clone the batch_rework branch of this repository into the newly created src directory:
 
 .. code-block:: console
 
     [username@lxplus### ~]$ cd CMSSW_5_3_32/src
-    [username@lxplus### src]$ git clone -b batch_work https://github.com/AlexMieth/reana-demo-cms-h4l.git
+    [username@lxplus### src]$ git clone -b batch_rework https://github.com/AlexMieth/reana-demo-cms-h4l.git
     
 Level 3
 -------
