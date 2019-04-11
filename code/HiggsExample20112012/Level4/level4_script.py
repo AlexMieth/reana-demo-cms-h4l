@@ -61,7 +61,8 @@ for sample in samples:
 with open('default_cfg.py', 'r') as default_cfg:
     default_content = default_cfg.read()
 
-count = 0   #Make a count to keep track the number of cfg files generated
+count = 0              #Make a count to keep track of total number of cfg files generated
+total_rootfiles = 0    #Make a count to keep track of total number of rootfiles to be analyzed
 for key,index_files in dataset_dict.items():
 
     dataset_id = key[0] + '-' + key[1]
@@ -73,6 +74,7 @@ for key,index_files in dataset_dict.items():
 
             #Read in the index file and create list of each line without '\n'
             rootfiles.extend( index_file.read().splitlines() )
+    total_rootfiles += len(rootfiles)
 
     #Iterate through each N set of lines
     for i in range(0, len(rootfiles), N):
@@ -110,3 +112,5 @@ for key,index_files in dataset_dict.items():
         #Create/write new cfg file using this updated content
         with open(new_filename,"w") as new_cfg:
             new_cfg.write(new_content)
+
+print("Generated " + str(count-1) + " configuration files within ./cfg_files directory to analyze a total of " + str(total_rootfiles) + " rootfiles.")
