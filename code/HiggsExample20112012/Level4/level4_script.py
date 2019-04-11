@@ -61,10 +61,9 @@ for sample in samples:
 with open('default_cfg.py', 'r') as default_cfg:
     default_content = default_cfg.read()
 
-
+count = 0   #Make a count to keep track the number of cfg files generated
 for key,index_files in dataset_dict.items():
 
-    count = 0   #Make a count to keep track the number of cfg files generated for each dataset key
     dataset_id = key[0] + '-' + key[1]
     rootfiles = []
 
